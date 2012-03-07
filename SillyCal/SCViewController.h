@@ -13,6 +13,7 @@
 - (IBAction)appendText:(id)sender;
 - (IBAction)setOperator:(id)sender;
 - (IBAction)doCalculation:(id)sender;
+- (IBAction)togglePositiveNegative:(id)sender;
 
 @property (retain, nonatomic) NSDecimalNumber *leftOprand;
 @property (retain, nonatomic) NSDecimalNumber *rightOprand;

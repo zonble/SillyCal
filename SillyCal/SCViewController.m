@@ -6,33 +6,21 @@
 
 - (void)dealloc
 {
-	[leftOprand release];
-	[rightOprand release];
-    [textLabel release];
-	[operatorLabel release];
-    [super dealloc];
-}
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-	if (self) {
-		leftOprand = nil;
-		rightOprand = nil;
-	}
-	return self;
+	[leftOprand release], [rightOprand release];
+	[textLabel release], [operatorLabel release];
+	[super dealloc];
 }
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
+	[super viewDidLoad];
 	self.textLabel.text = rightOprand ? [rightOprand stringValue] : @"0";
 	self.operatorLabel.text = @"";
 }
 
 - (void)viewDidUnload
 {
-    [super viewDidUnload];
+	[super viewDidUnload];
 	self.textLabel = nil;
 	self.operatorLabel = nil;
 }
@@ -60,13 +48,12 @@
 	
 	NSString *s = [(UIButton *)sender titleLabel].text;
 	if ([s isEqualToString:@"."]) {
-		if ([textLabel.text rangeOfString:@"."].location != NSNotFound) {
-			return;
+		if ([textLabel.text rangeOfString:@"."].location == NSNotFound) {
+			textLabel.text = [textLabel.text stringByAppendingString:s];
 		}
-		textLabel.text = [textLabel.text stringByAppendingString:s];
 		return;
 	}
-	else if ([s isEqualToString:@"0"]) {
+	if ([s isEqualToString:@"0"]) {
 		if ([textLabel.text isEqualToString:@"0"]) {
 			return;
 		}
@@ -86,7 +73,7 @@
 		return;
 	}
 	if (operatorSelector == @selector(decimalNumberByDividingBy:) && [rightOprand floatValue] == 0.0) {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to devide 0" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to devide 0!" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
 		[alert show];
 		[alert release];
 		return;
@@ -141,6 +128,16 @@
 	[self _doCalculation];
 	self.operatorLabel.text = @"";
 	operatorSelector = NULL;
+}
+
+- (IBAction)togglePositiveNegative:(id)sender
+{
+	if (resetTextLabelOnNextAppending) {
+		self.leftOprand = nil;
+		resetTextLabelOnNextAppending = NO;
+	}
+	NSString *s = self.textLabel.text;
+	self.textLabel.text = [s hasPrefix:@"-"] ? [s substringFromIndex:1] : [@"-" stringByAppendingString:s];
 }
 
 #pragma mark Properties
