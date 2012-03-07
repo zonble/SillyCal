@@ -1,0 +1,7 @@
+*.pbxuser
+*.mode1v3
+*.tm_build_errors
+*.perspectivev3
+*.xcworkspace
+xcuserdata
+
