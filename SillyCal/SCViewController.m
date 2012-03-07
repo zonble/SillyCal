@@ -6,7 +6,7 @@
 
 - (void)dealloc
 {
-	[leftOprand release], [rightOprand release];
+	[leftOprand release], [rightOprand release], [memory release];
 	[textLabel release], [operatorLabel release];
 	[super dealloc];
 }
@@ -53,13 +53,10 @@
 		}
 		return;
 	}
-	if ([s isEqualToString:@"0"]) {
-		if ([textLabel.text isEqualToString:@"0"]) {
+	if ([textLabel.text isEqualToString:@"0"]) {
+		if ([s isEqualToString:@"0"]) {
 			return;
 		}
-	}
-	
-	if ([textLabel.text isEqualToString:@"0"]) {
 		textLabel.text = s;
 	}
 	else {
@@ -87,21 +84,6 @@
 
 - (IBAction)setOperator:(id)sender
 {	
-	SEL selector = NULL;
-	NSString *s = [(UIButton *)sender titleLabel].text;
-	if ([s isEqualToString:@"+"]) {
-		selector = @selector(decimalNumberByAdding:);
-	}
-	else if ([s isEqualToString:@"-"]) {
-		selector = @selector(decimalNumberBySubtracting:);
-	}
-	else if ([s isEqualToString:@"*"]) {
-		selector = @selector(decimalNumberByMultiplyingBy:);
-	}
-	else if ([s isEqualToString:@"/"]) {
-		selector = @selector(decimalNumberByDividingBy:);
-	}
-
 	if (!self.leftOprand) {
 		self.leftOprand = [NSDecimalNumber decimalNumberWithString:self.textLabel.text];
 		self.rightOprand = nil;
@@ -110,18 +92,21 @@
 		self.rightOprand = [NSDecimalNumber decimalNumberWithString:self.textLabel.text];
 		[self _doCalculation];
 	}
-	
-	operatorSelector = selector;
+
+	NSString *s = [(UIButton *)sender titleLabel].text;
+	NSDictionary *keySelectorMap = [NSDictionary dictionaryWithObjectsAndKeys:
+						@"decimalNumberByAdding:", @"+",
+						@"decimalNumberBySubtracting:", @"-",
+						@"decimalNumberByMultiplyingBy:", @"*",
+						@"decimalNumberByDividingBy:", @"/", nil];	
+	operatorSelector = NSSelectorFromString([keySelectorMap objectForKey:s]);
 	self.operatorLabel.text = s;
 	resetTextLabelOnNextAppending = YES;
 }
 
 - (IBAction)doCalculation:(id)sender
 {
-	if (operatorSelector == NULL) {
-		return;
-	}
-	if (!self.leftOprand) {
+	if (operatorSelector == NULL || !self.leftOprand) {
 		return;
 	}
 	self.rightOprand = [NSDecimalNumber decimalNumberWithString:self.textLabel.text];
@@ -140,8 +125,43 @@
 	self.textLabel.text = [s hasPrefix:@"-"] ? [s substringFromIndex:1] : [@"-" stringByAppendingString:s];
 }
 
+- (IBAction)memoryClear:(id)sender
+{
+	self.memory = [NSDecimalNumber decimalNumberWithString:@"0"];
+}
+
+- (IBAction)memoryPlus:(id)sender
+{
+	if (!self.memory) {
+		self.memory = [NSDecimalNumber decimalNumberWithString:@"0"];
+	}
+	self.memory = [self.memory decimalNumberByAdding:[NSDecimalNumber decimalNumberWithString:self.textLabel.text]];
+	resetTextLabelOnNextAppending = YES;
+}
+
+- (IBAction)memoryMinus:(id)sender
+{
+	if (!self.memory) {
+		self.memory = [NSDecimalNumber decimalNumberWithString:@"0"];
+	}
+	self.memory = [self.memory decimalNumberBySubtracting:[NSDecimalNumber decimalNumberWithString:self.textLabel.text]];
+	resetTextLabelOnNextAppending = YES;
+}
+
+- (IBAction)memoryRecall:(id)sender
+{
+	if (!self.memory) {
+		self.memory = [NSDecimalNumber decimalNumberWithString:@"0"];
+	}
+	self.textLabel.text = [self.memory stringValue];
+	if (!operatorSelector) {
+		self.leftOprand = [[self.memory copy] autorelease];
+	}
+	resetTextLabelOnNextAppending = YES;
+}
+
 #pragma mark Properties
 
-@synthesize leftOprand, rightOprand;
+@synthesize leftOprand, rightOprand, memory;
 @synthesize textLabel, operatorLabel;
 @end
