@@ -121,6 +121,8 @@
 		self.leftOprand = nil;
 		resetTextLabelOnNextAppending = NO;
 	}
+	operatorSelector = NULL;
+	operatorLabel.text = @"";
 	NSString *s = self.textLabel.text;
 	self.textLabel.text = [s hasPrefix:@"-"] ? [s substringFromIndex:1] : [@"-" stringByAppendingString:s];
 }
