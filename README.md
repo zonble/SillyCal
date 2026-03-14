@@ -1,11 +1,10 @@
-SillyCal - Silly Calculator
-============================
+# SillyCal - Silly Calculator
 
 A sample iPhone calculator app written in Objective-C, originally created as a
 learning exercise and demonstration project.
 
-Features
---------
+## Features
+
 - Basic arithmetic operations: addition, subtraction, multiplication, division
 - Memory functions: MC (memory clear), M+ (memory plus), M- (memory minus),
   MR (memory recall)
@@ -13,8 +12,8 @@ Features
 - Decimal point input
 - Division-by-zero error handling
 
-Technical Notes
----------------
+## Technical Notes
+
 - Written in Objective-C using manual reference counting (MRC/non-ARC).
   The code uses explicit [release] calls and retain properties, which reflects
   iOS development practices prior to the introduction of ARC (Automatic
@@ -27,8 +26,8 @@ Technical Notes
 - The project includes a Travis CI configuration (.travis.yml) that builds
   against the i386 iPhone Simulator SDK.
 
-Legacy Status
--------------
+## Legacy Status
+
 This project is no longer maintained and is archived for historical reference.
 It will not build with modern versions of Xcode without migration to ARC and
 updates to deprecated APIs (e.g. UIAlertView, viewDidUnload,
